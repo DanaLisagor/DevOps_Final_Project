@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hello-flask-pod
+  labels:
+    app: frontend
+spec:
+  containers:
+  - name: hello-flask-container
+    image: danalisagor/hello-flask:latest
+    ports:
+    - containerPort: 5000

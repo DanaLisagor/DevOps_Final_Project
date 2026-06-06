@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hello-flask-cronjob
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: hello-cron
+            image: busybox
+            command: ["sh", "-c", "echo Hello Flask CronJob is running"]
+          restartPolicy: OnFailure

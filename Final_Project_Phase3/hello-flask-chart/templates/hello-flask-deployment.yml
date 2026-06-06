@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-flask-deployment
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: hello-flask
+  template:
+    metadata:
+      labels:
+        app: hello-flask
+    spec:
+      containers:
+      - name: hello-flask-container
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        ports:
+        - containerPort: {{ .Values.containerPort }}
+        resources:
+          requests:
+            cpu: 100m
+        env:
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: hello-flask-config
+              key: PORT
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: hello-flask-secret
+              key: SECRET_KEY
+        livenessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.containerPort }}
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.containerPort }}
+          initialDelaySeconds: 5
+          periodSeconds: 5

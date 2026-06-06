@@ -1,0 +1,36 @@
+# Number of application replicas
+replicaCount: 2
+
+# Docker image configuration
+image:
+  repository: danalisagor/hello-flask
+  tag: latest
+
+# Application container port
+containerPort: 5000
+
+# Service configuration
+service:
+  type: NodePort
+  port: 5000
+  nodePort: 30004
+
+# ConfigMap values
+config:
+  port: "5000"
+
+# Secret values
+secret:
+  secretKey: cGFzc3dvcmQ=
+
+# HPA configuration
+autoscaling:
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 60
+
+# CronJob configuration
+cronjob:
+  schedule: "*/1 * * * *"
+  image: busybox
+  command: "echo Hello Flask CronJob is running"
