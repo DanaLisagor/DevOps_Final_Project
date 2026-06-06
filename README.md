@@ -1,4 +1,4 @@
-# DevOps Final Project - Conflict Branch Version
+# DevOps Final Project
 
 This project demonstrates a full DevOps workflow using Git, Docker, Kubernetes, Helm, and Jenkins.
 
