@@ -1,6 +1,6 @@
 # Devops Final Project
 
-This repository conatains all project phases:
+This repository contains all project phases:
 
 - Phase 1 - Dockerized Flask Applcation
 - Phase 2 - Kuberneted Deployment
