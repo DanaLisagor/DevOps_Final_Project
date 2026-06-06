@@ -21,7 +21,7 @@ pipeline {
         stage('Deploy With Helm Dry Run') {
             steps {
                 dir('Final_Project_Phase3') {
-                    sh 'helm upgrade --install hello-flask ./hello-flask-chart --dry-run'
+                    sh 'helm upgrade --install hello-flask-test ./hello-flask-chart --dry-run'
                 }
             }
         }
