@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Build Docker Image') {
             steps {
-                dir('Final_Project_Phase1') {
+                dir('app') {
                     sh 'docker build -t hello-flask-app:latest .'
                 }
             }
@@ -12,7 +12,7 @@ pipeline {
 
         stage('Test Python App') {
             steps {
-                dir('Final_Project_Phase1') {
+                dir('app') {
                     sh 'python3 -m py_compile hello_world.py'
                 }
             }
@@ -20,7 +20,7 @@ pipeline {
 
         stage('Deploy With Helm Dry Run') {
             steps {
-                dir('Final_Project_Phase3') {
+                dir('helm') {
                     sh 'helm upgrade --install hello-flask-test ./hello-flask-chart --dry-run'
                 }
             }
