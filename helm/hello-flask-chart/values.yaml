@@ -3,7 +3,7 @@ replicaCount: 2
 
 # Docker image configuration
 image:
-  repository: danalisagor/hello-flask
+  repository: danalisagor/hello-flask-k8s
   tag: latest
 
 # Application container port

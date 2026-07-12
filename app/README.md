@@ -1,85 +1,167 @@
-# Hello Flask
+# Hello Flask Application
 
 ## Overview
 
 This directory contains the Python Flask application used in the DevOps Final Project.
 
-The application returns a simple **"Hello, World!"** response and is used to demonstrate Docker containerization.
+The application provides a basic web endpoint, a health check endpoint for Kubernetes probes, and a CPU load endpoint used to demonstrate Horizontal Pod Autoscaling (HPA).
+
+---
+
+## Application Endpoints
+
+| Endpoint | Purpose |
+|---|---|
+| `/` | Returns the application response |
+| `/health` | Health check used by Kubernetes probes |
+| `/load` | Generates CPU load for HPA testing |
+
+### Home Endpoint
+
+```text
+/
+```
+
+Returns:
+
+```text
+Hello, World!
+```
+
+### Health Check Endpoint
+
+```text
+/health
+```
+
+Returns:
+
+```text
+OK
+```
+
+This endpoint is used by the Kubernetes Liveness and Readiness Probes.
+
+### CPU Load Endpoint
+
+```text
+/load
+```
+
+The endpoint starts CPU-intensive processing.
+
+It is used to increase application CPU utilization and demonstrate automatic Pod scaling using Kubernetes HPA.
 
 ---
 
 ## Prerequisites
 
-Before running the application, make sure the following tools are installed:
+Before running the application locally, make sure the following tools are installed:
 
 - Docker
 - Docker Compose
 
 ---
 
-## Running the Application
+# Running the Application
 
-### Using Docker Compose (Recommended)
+## Option 1: Using Docker Compose
+
+### 1. Build and Start the Application
 
 ```bash
 docker compose up --build
 ```
 
-### Using Docker
+### 2. Access the Application
 
-Build the Docker image:
+Open:
+
+```text
+http://localhost:5000
+```
+
+### 3. Stop the Application
+
+Press:
+
+```text
+CTRL + C
+```
+
+---
+
+## Option 2: Using Docker
+
+### 1. Build the Docker Image
 
 ```bash
 docker build -t hello-flask .
 ```
 
-Run the container:
+### 2. Run the Container
 
 ```bash
 docker run -p 5000:5000 hello-flask
 ```
 
----
+### 3. Verify the Application
 
-## Access the Application
+Open:
 
-After the container starts, open your browser and navigate to:
-
-```
+```text
 http://localhost:5000
 ```
 
-You should see:
-
-```
-Hello, World!
-```
-
----
-
-## Docker Hub
-
-The Docker image used in this project is available at:
-
-https://hub.docker.com/r/danalisagor/hello-flask
-
----
-
-## Additional Docker Commands
-
-### Run the container in detached mode
+Verify the health endpoint:
 
 ```bash
-docker run -d -p 5000:5000 --name hello-container hello-flask
+curl http://localhost:5000/health
 ```
 
-### Create a Docker volume
+The expected response is:
+
+```text
+OK
+```
+
+### 4. Generate CPU Load
+
+Run:
+
+```bash
+curl http://localhost:5000/load
+```
+
+The expected response is:
+
+```text
+CPU load started
+```
+
+---
+
+## Docker Image
+
+The Kubernetes deployment uses the following Docker image:
+
+```text
+danalisagor/hello-flask-k8s:latest
+```
+
+The image contains the Flask application and the endpoints required for Kubernetes health checks and HPA testing.
+
+---
+
+## Docker Volume
+
+Create a Docker volume:
 
 ```bash
 docker volume create flask_data
 ```
 
-### Run the container with a volume
+Run the container with the volume:
 
 ```bash
 docker run -d -p 5000:5000 --name hello-container -v flask_data:/app/logs hello-flask
@@ -89,4 +171,6 @@ docker run -d -p 5000:5000 --name hello-container -v flask_data:/app/logs hello-
 
 ## Project Context
 
-This application is the Docker component of the **DevOps Final Project** and serves as the foundation for the Kubernetes and Helm deployment stages.
+This application represents the application and containerization component of the DevOps Final Project.
+
+The Docker image is deployed to Kubernetes using the Helm chart included in the project.

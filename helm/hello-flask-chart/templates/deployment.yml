@@ -19,6 +19,8 @@ spec:
         - containerPort: {{ .Values.containerPort }}
         resources:
           requests:
+            cpu: 50m
+          limits:
             cpu: 100m
         env:
         - name: PORT
@@ -33,13 +35,13 @@ spec:
               key: SECRET_KEY
         livenessProbe:
           httpGet:
-            path: /
+            path: /health
             port: {{ .Values.containerPort }}
           initialDelaySeconds: 10
           periodSeconds: 10
         readinessProbe:
           httpGet:
-            path: /
+            path: /health
             port: {{ .Values.containerPort }}
           initialDelaySeconds: 5
           periodSeconds: 5

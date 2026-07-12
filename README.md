@@ -2,35 +2,70 @@
 
 ## Overview
 
-This repository contains a complete DevOps project that demonstrates the process of containerizing, deploying, and automating a Python Flask application using modern DevOps tools.
+This repository contains a complete DevOps project that demonstrates the process of containerizing, deploying, scaling, and automating a Python Flask application using modern DevOps tools.
 
-The project is organized into several components, each responsible for a different part of the DevOps workflow.
+The project demonstrates a complete workflow from application development and containerization to Kubernetes deployment and automatic scaling.
 
 The project includes:
 
 - Containerizing a Python Flask application with Docker.
-- Deploying the application to Kubernetes.
-- Packaging the application with Helm.
-- Automating deployment validation using Jenkins.
+- Deploying the application to Kubernetes using Helm.
+- Managing application configuration using ConfigMap and Secret.
+- Implementing health checks using Liveness and Readiness Probes.
+- Implementing Horizontal Pod Autoscaling (HPA) based on CPU utilization.
+- Automating build, application validation, and Helm deployment validation using Jenkins.
 
 ---
 
 ## Technologies Used
 
-- Python
-- Flask
-- Git & GitHub
-- Docker
-- Docker Compose
-- Kubernetes
-- Helm
-- Jenkins
+| Technology | Purpose |
+|---|---|
+| Python | Application development |
+| Flask | Web application framework |
+| Git & GitHub | Version control |
+| Docker | Application containerization |
+| Docker Compose | Local container management |
+| Kubernetes | Container orchestration |
+| Minikube | Local Kubernetes cluster |
+| Helm | Kubernetes package management |
+| Jenkins | CI/CD automation |
+
+---
+
+## Project Workflow
+
+```text
+Python Flask Application
+          │
+          ▼
+       Docker
+          │
+          ▼
+     Docker Image
+          │
+          ▼
+      Helm Chart
+          │
+          ▼
+      Kubernetes
+          │
+          ├── Deployment
+          ├── Service
+          ├── ConfigMap
+          ├── Secret
+          ├── CronJob
+          └── HPA
+                 │
+                 ▼
+        Automatic Pod Scaling
+```
 
 ---
 
 ## Repository Structure
 
-```
+```text
 Final_Project/
 │
 ├── app/
@@ -38,16 +73,6 @@ Final_Project/
 │   ├── docker-compose.yml
 │   ├── hello_world.py
 │   ├── requirements.txt
-│   └── README.md
-│
-├── kubernetes/
-│   ├── configmap.yml
-│   ├── cronjob.yml
-│   ├── deployment.yml
-│   ├── hpa.yml
-│   ├── pod.yml
-│   ├── secret.yml
-│   ├── service.yml
 │   └── README.md
 │
 ├── helm/
@@ -65,6 +90,11 @@ Final_Project/
 │           ├── service.yml
 │           └── NOTES.txt
 │
+├── docs/
+│   └── images/
+│       ├── helm-deployment.png
+│       └── hpa-scaling.png
+│
 ├── Jenkinsfile
 ├── README.md
 └── .gitignore
@@ -72,24 +102,27 @@ Final_Project/
 
 ---
 
-## Docker
+## Application
 
-The Docker component containerizes the Python Flask application and defines the environment required to run it.
+The Python Flask application provides the following endpoints:
 
-This component includes:
+| Endpoint | Purpose |
+|---|---|
+| `/` | Returns the application response |
+| `/health` | Health check used by Kubernetes probes |
+| `/load` | Generates CPU load for HPA testing |
 
-- Dockerfile
-- Docker Compose configuration
-- Python Flask application
-- Requirements file
+The `/load` endpoint performs CPU-intensive calculations to demonstrate automatic scaling based on CPU utilization.
+
+For detailed application and Docker instructions, see `app/README.md`.
 
 ---
 
-## Kubernetes
+## Helm and Kubernetes
 
-The Kubernetes component deploys the application using Kubernetes manifest files.
+The application is deployed to Kubernetes using a reusable Helm chart.
 
-The following Kubernetes resources are included:
+The Helm chart creates the following Kubernetes resources:
 
 - Deployment
 - Service
@@ -98,18 +131,86 @@ The following Kubernetes resources are included:
 - CronJob
 - Horizontal Pod Autoscaler (HPA)
 
+The Deployment includes:
+
+- CPU resource requests
+- CPU resource limits
+- Liveness Probe
+- Readiness Probe
+
+Both probes use the `/health` application endpoint.
+
+The HPA scales the application between 2 and 10 replicas based on a target CPU utilization of 60%.
+
+### Helm Deployment
+
+The application was successfully deployed to Kubernetes using Helm.
+
+![Helm Deployment](docs/images/helm-deployment.png)
+
+For detailed deployment and HPA testing instructions, see `helm/hello-flask-chart/README.md`.
+
 ---
 
-## Helm
+## Quick Start
 
-The Helm component defines the application deployment using reusable and configurable Helm templates.
+### 1. Start Minikube
 
-The Helm chart includes:
+```bash
+minikube start
+```
 
-- Chart metadata (`Chart.yaml`)
-- Default configuration (`values.yaml`)
-- Reusable Kubernetes templates
-- A dedicated README with usage instructions
+### 2. Enable Metrics Server
+
+```bash
+minikube addons enable metrics-server
+```
+
+### 3. Deploy the Application
+
+From the `helm` directory:
+
+```bash
+helm upgrade --install hello-flask-test ./hello-flask-chart
+```
+
+### 4. Verify the Pods
+
+```bash
+kubectl get pods
+```
+
+### 5. Access the Application
+
+```bash
+minikube service hello-flask-service --url
+```
+
+### 6. Generate CPU Load
+
+```bash
+curl <APPLICATION_URL>/load
+```
+
+### 7. Monitor HPA Scaling
+
+```bash
+kubectl get hpa -w
+```
+
+---
+
+## Horizontal Pod Autoscaling
+
+The application uses Kubernetes Horizontal Pod Autoscaling based on CPU utilization.
+
+During testing, CPU utilization increased above the configured 60% target and reached 164%.
+
+The HPA automatically scaled the Deployment from 2 replicas to 6 replicas.
+
+### HPA Scaling Demonstration
+
+![HPA Scaling](docs/images/hpa-scaling.png)
 
 ---
 
@@ -117,9 +218,19 @@ The Helm chart includes:
 
 The Jenkins pipeline performs the following actions:
 
-1. Builds the Docker image.
-2. Verifies the Python application.
-3. Validates the Helm chart using a dry-run deployment.
+1. Checks out the source code from Git.
+2. Builds the Docker image.
+3. Verifies the Python application.
+4. Validates the Helm chart using a dry-run deployment.
+
+---
+
+## Documentation
+
+Detailed documentation is available in:
+
+- `app/README.md` – Application and Docker instructions.
+- `helm/hello-flask-chart/README.md` – Helm deployment, Kubernetes resources, and HPA testing guide.
 
 ---
 
@@ -127,4 +238,4 @@ The Jenkins pipeline performs the following actions:
 
 Dana Lisagor
 
-GitHub: https://github.com/DanaLisagor
+GitHub: DanaLisagor
