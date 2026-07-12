@@ -93,7 +93,8 @@ Final_Project/
 ├── docs/
 │   └── images/
 │       ├── helm-deployment.png
-│       └── hpa-scaling.png
+│       ├── hpa-scaling.png
+│       └── jenkins-pipeline.png
 │
 ├── Jenkinsfile
 ├── README.md
@@ -216,12 +217,22 @@ The HPA automatically scaled the Deployment from 2 replicas to 6 replicas.
 
 ## Jenkins Pipeline
 
-The Jenkins pipeline performs the following actions:
+The Jenkins pipeline automates the project validation process.
+
+The pipeline performs the following stages:
 
 1. Checks out the source code from Git.
 2. Builds the Docker image.
 3. Verifies the Python application.
 4. Validates the Helm chart using a dry-run deployment.
+
+### Successful Pipeline Execution
+
+The complete Jenkins pipeline was successfully executed with all stages completed successfully.
+
+![Jenkins Pipeline](docs/images/jenkins-pipeline.png)
+
+---
 
 ---
 
